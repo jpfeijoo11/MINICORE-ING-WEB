@@ -1,0 +1,27 @@
+services:
+  # Backend — Spring Boot, se construye con el Dockerfile del proyecto.
+  - type: web
+    name: minicore-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./minicore-backend/Dockerfile
+    dockerContext: ./minicore-backend
+
+  # Frontend — Angular, compilado y servido como sitio estático.
+  # Antes de compilar, genera environment.prod.ts con la URL real del
+  # backend (API_HOST se resuelve automáticamente vía fromService).
+  - type: web
+    name: minicore-frontend
+    runtime: static
+    buildCommand: cd minicore-frontend && npm install && node scripts/generate-env.js && npm run build
+    staticPublishPath: minicore-frontend/dist/minicore-frontend/browser
+    envVars:
+      - key: API_HOST
+        fromService:
+          name: minicore-backend
+          type: web
+          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

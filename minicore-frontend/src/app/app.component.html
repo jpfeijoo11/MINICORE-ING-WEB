@@ -1,0 +1,108 @@
+<!-- ============================================================
+     VISTA — MiniCore: Reporte de Envíos por Repartidor
+     ============================================================ -->
+<div class="page-wrapper">
+
+  <!-- ── Encabezado ─────────────────────────────────────────── -->
+  <header class="header">
+    <h1>📦 MiniCore — Logística</h1>
+    <p class="subtitle">Reporte de costos de envíos por repartidor</p>
+  </header>
+
+  <!-- ── Formulario de búsqueda ─────────────────────────────── -->
+  <section class="card form-card">
+    <h2>Selecciona el rango de fechas</h2>
+
+    <form (ngSubmit)="buscar()" #f="ngForm" class="form-grid">
+
+      <div class="field">
+        <label for="fechaInicio">Fecha Inicio</label>
+        <input
+          id="fechaInicio"
+          type="date"
+          [(ngModel)]="fechaInicio"
+          name="fechaInicio"
+          required />
+      </div>
+
+      <div class="field">
+        <label for="fechaFin">Fecha Fin</label>
+        <input
+          id="fechaFin"
+          type="date"
+          [(ngModel)]="fechaFin"
+          name="fechaFin"
+          required />
+      </div>
+
+      <div class="field field-btn">
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          <span *ngIf="!cargando">🔍 Consultar</span>
+          <span *ngIf="cargando">⏳ Consultando…</span>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="alert-error">
+      ⚠️ {{ error }}
+    </div>
+  </section>
+
+  <!-- ── Resultados ─────────────────────────────────────────── -->
+  <section class="card results-card" *ngIf="consultado">
+
+    <h2>Resultados
+      <span class="rango-badge">{{ fechaInicio }} → {{ fechaFin }}</span>
+    </h2>
+
+    <!-- Sin resultados -->
+    <p *ngIf="reporte.length === 0" class="no-data">
+      No se encontraron envíos en el período seleccionado.
+    </p>
+
+    <!-- Tabla de resultados -->
+    <div class="table-wrapper" *ngIf="reporte.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Repartidor</th>
+            <th>Envíos</th>
+            <th>Total kg</th>
+            <th>Zona(s)</th>
+            <th>Costo Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fila of reporte"
+              [class.sin-envios]="fila.totalEnvios === 0">
+            <td class="nombre">{{ fila.nombre }}</td>
+            <td class="center">{{ fila.totalEnvios }}</td>
+            <td class="center">
+              <span *ngIf="fila.totalEnvios > 0">{{ fila.totalKg | number:'1.2-2' }} kg</span>
+              <span *ngIf="fila.totalEnvios === 0" class="dash">—</span>
+            </td>
+            <td class="center">
+              {{ zonasTexto(fila) }}
+            </td>
+            <td class="costo">
+              <span *ngIf="fila.totalEnvios > 0">
+                ${{ fila.costoTotal | number:'1.2-2' }}
+              </span>
+              <span *ngIf="fila.totalEnvios === 0" class="no-aplica">No aplica</span>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="4" class="total-label">TOTAL GENERAL</td>
+            <td class="costo">${{ granTotal | number:'1.2-2' }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+  </section>
+
+</div>

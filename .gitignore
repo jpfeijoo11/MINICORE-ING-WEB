@@ -1,0 +1,22 @@
+# --- Backend (Maven/Java) ---
+minicore-backend/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# --- Frontend (Angular/Node) ---
+minicore-frontend/node_modules/
+minicore-frontend/dist/
+minicore-frontend/.angular/
+
+# --- IDE / OS ---
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+npm-debug.log*
