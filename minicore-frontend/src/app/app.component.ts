@@ -71,7 +71,10 @@ export class AppComponent {
       },
       error: (err) => {
         console.error(err);
-        this.error    = 'No se pudo conectar al servidor. Verifica que el backend esté corriendo en localhost:8080.';
+        const detalle = err?.status === 0
+          ? 'no responde o hay un problema de CORS/red'
+          : `respondió con estado ${err?.status}`;
+        this.error    = `No se pudo conectar al backend en ${this.envioService.apiUrlDebug} (${detalle}).`;
         this.cargando = false;
       }
     });

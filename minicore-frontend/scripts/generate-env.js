@@ -6,11 +6,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const apiHost = process.env.API_HOST;
+let apiHost = process.env.API_HOST;
 
 if (!apiHost) {
   console.log('[generate-env] API_HOST no definido, se usa environment.prod.ts existente.');
   process.exit(0);
+}
+
+// El property "host" de fromService puede devolver solo el slug del servicio
+// (ej. "minicore-backend-517g") sin el dominio ".onrender.com". Si no trae
+// un punto (osea, no es ya un dominio completo), se lo agregamos.
+if (!apiHost.includes('.')) {
+  apiHost = `${apiHost}.onrender.com`;
 }
 
 const apiUrl = `https://${apiHost}/api/envios/reporte`;

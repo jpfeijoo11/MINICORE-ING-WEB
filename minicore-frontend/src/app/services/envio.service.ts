@@ -18,6 +18,11 @@ export class EnvioService {
 
   private readonly apiUrl = environment.apiUrl;
 
+  /** Expuesto solo para mostrar diagnóstico en pantalla si falla la conexión. */
+  get apiUrlDebug(): string {
+    return this.apiUrl;
+  }
+
   constructor(private http: HttpClient) {}
 
   /**
